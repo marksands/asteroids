@@ -1,1 +1,1 @@
-g++ -framework GLUT -framework OpenGL -framework Cocoa PulsatingStars.cpp && ./a.out
+g++ -framework GLUT -framework OpenGL -framework Cocoa -framework OpenAL PulsatingStars.cpp && ./a.out

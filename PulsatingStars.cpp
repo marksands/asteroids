@@ -5,7 +5,7 @@
 /* borders with they collide. Mouse operations are used to  */
 /* "freeze" stars and keyboard and menu operations are used */
 /* to resize or recolor those stars that are frozen.        */
-/************************************************************/
+/************************************************************/ 
 
 #include <GLUT/glut.h>
 #include <math.h>			// Header File For Math Library
@@ -15,6 +15,7 @@
 
 #include <fstream>
 
+#include "AudioPlayer.h"
 #include "Graphics.h"
 #include "Asteroid.h"
 
@@ -67,11 +68,20 @@ bool  g_is_paused;
 
 Random<> g_random;
 
+#define THEME 0
+#define FIRE 1
+#define EXPLOSION 2
+
+char* filenames[3] = { "theme.wav", "fire.wav", "explosion.wav" };
+MediaPlayer *Player = new AudioPlayer( filenames, 3 );
+
 /* The main function: uses the OpenGL Utility Toolkit to set */
 /* the window up to display the window and its contents.     */
 int main(int argc, char **argv)
 {
 	glutInit (&argc, argv);
+
+	Player->Play( THEME, true );
 
   init_gl( init_main );
 
@@ -155,7 +165,9 @@ void mouse_click(int mouse_button, int mouse_state, int mouse_x, int mouse_y)
   // Converts the coordinates passed in, into the windows coordinate system
 	g_click_coordinates.x = g_window_ratio[0] * mouse_x / g_current_window_size[0] - 0.5 * g_window_ratio[0];
 	g_click_coordinates.y = 0.5 * g_window_ratio[1] - (g_window_ratio[1] * mouse_y / g_current_window_size[1]);
-
+	
+	Player->Play( FIRE );
+	
   // Call asteroid_click for each asteroid in the linked list
   g_asteroids.each( asteroid_click );
 }
@@ -175,6 +187,7 @@ bool asteroid_click( Asteroid* asteroid )
   // the screen;
   if( asteroid->can_explode() )
   {
+	Player->Play( EXPLOSION );
     Asteroid **fragments = asteroid->get_fragments();
 
     for( int i = 0, n = asteroid->fragment_count; i < n; i++ )
