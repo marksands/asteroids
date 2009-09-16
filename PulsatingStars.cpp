@@ -173,11 +173,13 @@ void mouse_click(int mouse_button, int mouse_state, int mouse_x, int mouse_y)
 }
 
 bool asteroid_click( Asteroid* asteroid )
-{
+{		
   // If not hit, move on to the next asteroid in the list
   if( !asteroid->hit_test( g_click_coordinates ) )
     return( true );
 
+
+  Player->Play( EXPLOSION );
 
   // Remove the asteroid clicked on from the linked list
   g_asteroids.removeHead();
@@ -187,7 +189,6 @@ bool asteroid_click( Asteroid* asteroid )
   // the screen;
   if( asteroid->can_explode() )
   {
-	Player->Play( EXPLOSION );
     Asteroid **fragments = asteroid->get_fragments();
 
     for( int i = 0, n = asteroid->fragment_count; i < n; i++ )
